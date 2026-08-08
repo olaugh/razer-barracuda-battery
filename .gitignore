@@ -1,0 +1,18 @@
+# Build artifacts
+.build/
+build/
+*.o
+*.swiftmodule
+
+# App bundle output
+*.app
+
+# macOS
+.DS_Store
+
+# Xcode/SwiftPM local
+*.xcuserstate
+.swiftpm/
+
+# Claude Code local config
+.claude/
