@@ -18,6 +18,9 @@ struct HeadsetStatus {
     /// True when the Barracuda is the current macOS default audio output.
     var audioActive: Bool
     var lastUpdated: Date
+    /// False when a dongle exists but its wireless-link query failed.
+    var connectionKnown: Bool = true
+    var diagnosticMessage: String? = nil
 
     static var disconnected: HeadsetStatus {
         HeadsetStatus(
@@ -35,11 +38,11 @@ struct HeadsetStatus {
         let batt = batteryPercent.map { "\($0)%" } ?? "unknown"
         let charge = isCharging.map { $0 ? "yes" : "no" } ?? "unknown"
         return """
-        Connected:   \(isConnected)
+        Connected:   \(connectionKnown ? String(isConnected) : "unknown")
         Battery:     \(batt)
         Charging:    \(charge)
         Connection:  \(connection.rawValue)
         Audio active:\(audioActive)
-        """
+        """ + (diagnosticMessage.map { "\nDiagnostic:  " + $0 } ?? "")
     }
 }
