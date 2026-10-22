@@ -15,6 +15,11 @@ let package = Package(
                 // the AppKit main-thread globals predate strict concurrency.
                 .unsafeFlags(["-swift-version", "5"])
             ]
+        ),
+        .testTarget(
+            name: "RazerBatteryMenuBarTests",
+            dependencies: ["RazerBatteryMenuBar"],
+            swiftSettings: [.unsafeFlags(["-swift-version", "5"])]
         )
     ]
 )

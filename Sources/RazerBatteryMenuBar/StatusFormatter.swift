@@ -7,6 +7,7 @@ enum StatusFormatter {
     /// Text is drawn with the system label color, so it adapts to light/dark
     /// menu bars automatically.
     static func menuBarTitle(_ s: HeadsetStatus) -> String {
+        guard s.connectionKnown else { return "🎧 ?" }
         guard s.isConnected else { return "🎧 —" }
         guard let pct = s.batteryPercent else {
             // Connected, battery not decoded: show the icon (charging bolt only
@@ -17,10 +18,11 @@ enum StatusFormatter {
     }
 
     static func batteryLine(_ s: HeadsetStatus) -> String {
-        "Battery: " + (s.batteryPercent.map { "\($0)%" } ?? (s.isConnected ? "Unknown" : "—"))
+        "Battery: " + (s.batteryPercent.map { "\($0)%" } ?? (s.isConnected || !s.connectionKnown ? "Unknown" : "—"))
     }
 
     static func chargingLine(_ s: HeadsetStatus) -> String {
+        guard s.connectionKnown else { return "Status: Unknown" }
         guard s.isConnected else { return "Status: —" }
         switch s.isCharging {
         case .some(true):  return "Status: Charging ⚡"
@@ -30,7 +32,7 @@ enum StatusFormatter {
     }
 
     static func connectionLine(_ s: HeadsetStatus) -> String {
-        "Connection: " + s.connection.rawValue
+        "Connection: " + (s.connectionKnown ? s.connection.rawValue : "Unknown (USB dongle detected)")
     }
 
     static func audioLine(_ s: HeadsetStatus) -> String {

@@ -14,6 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let connectionItem = NSMenuItem()
     private let audioItem = NSMenuItem()
     private let updatedItem = NSMenuItem()
+    private let diagnosticItem = NSMenuItem()
     private var loginItem: NSMenuItem!
 
     private static let timeFormatter: DateFormatter = {
@@ -50,13 +51,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         monitor.audio.stop()
     }
 
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        timer?.invalidate()
+        monitor.audio.stop()
+        monitor.stop { sender.reply(toApplicationShouldTerminate: true) }
+        return .terminateLater
+    }
+
     // MARK: - Menu
 
     private func buildMenu() {
         let menu = NSMenu()
         menu.delegate = self
 
-        let header = NSMenuItem(title: "Razer Barracuda X Chroma", action: nil, keyEquivalent: "")
+        let header = NSMenuItem(title: "Razer Barracuda", action: nil, keyEquivalent: "")
         header.isEnabled = false
         menu.addItem(header)
         menu.addItem(.separator())
@@ -65,6 +73,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             item.isEnabled = false
             menu.addItem(item)
         }
+        diagnosticItem.isEnabled = false
+        menu.addItem(diagnosticItem)
         menu.addItem(.separator())
 
         updatedItem.isEnabled = false
@@ -119,5 +129,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         connectionItem.title = StatusFormatter.connectionLine(status)
         audioItem.title = StatusFormatter.audioLine(status)
         updatedItem.title = "Updated: " + AppDelegate.timeFormatter.string(from: status.lastUpdated)
+        diagnosticItem.title = status.diagnosticMessage ?? ""
+        diagnosticItem.isHidden = status.diagnosticMessage == nil
     }
 }

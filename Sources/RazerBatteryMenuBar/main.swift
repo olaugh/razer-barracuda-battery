@@ -6,7 +6,7 @@ let arguments = CommandLine.arguments
 
 if arguments.contains("--help") || arguments.contains("-h") {
     print("""
-    RazerBatteryMenuBar — Razer Barracuda X Chroma battery monitor
+    RazerBatteryMenuBar — Razer Barracuda X (2022) / X Chroma battery monitor
 
     Usage:
       RazerBatteryMenuBar               Launch the menu-bar app
